@@ -1,0 +1,20 @@
+// Functions.
+@use 'select.type.function' as select-type;
+
+// Status: TODO: 
+// The `list.select-color()` or `select.color()` function returns any, first or last occurring color, or all occurred colors, also the specified colors, otherwise color.
+// @param `$list` A list from which the occurring colors are retrieved.
+// @param `$occurrence` All, any, first or last occurrence of retrieved colors from `$list`.
+// @param `$operator` Operator to compare with `$value` and optional `$values`.
+// @arbitrary `$colors...` 
+// @returns The returned value is a copy of `$list`.
+@function color($list, $occurrence: first, $operator: '==', $colors...) {
+  @return select-type.type($list, $occurrence, color, $operator, $colors...);
+}
+
+// Examples.
+$-list: (#aaa, 1, #bbb, 2, #ccc, 3, #ddd, 4, #eee, 5, #fff);
+
+@debug color($-list, all); // #aaa, #bbb, #ccc, #ddd, #eee, #fff
+@debug color($-list, first); // #aaa
+@debug color($-list, last); // #fff

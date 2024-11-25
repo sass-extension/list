@@ -1,0 +1,70 @@
+// Sass.
+@use 'sass:list';
+
+// Functions.
+@use '../list.select.function' as list-select;
+
+// Status: DONE
+// The `list.select-type()` or `select.type()` function returns the list with elements of the given types.
+// @param `$list` The list from which elements are being taken.
+// @param `$occurrence` Any, first, last or all occurrence of types in `$list`.
+// @param `$types` The required types to retrieve from `$list`.
+// @param `$operator` Operator to compare `$list` elements with `$values`.
+// @arbitrary `$values...` Additional values of `$types` to retrieve from `$list`.
+// @returns The returned value is a copy of `$list` with elements of `$types`.
+@function type($list, $occurrence: any, $types, $operator: '==', $values...) {
+  $list: list-select.select(
+    list.length($values) > 0 and all or $occurrence value,
+    $list,
+    value,
+    ':' + (not list.index('==' '!=' '!==', $operator) and '==' or $operator),
+    $types...
+  );
+  @return if(
+    list.length($values) > 0,
+    list-select.select($occurrence value, $list, value, $operator, $values...),
+    $list
+  );
+}
+
+// Examples.
+$-list1: (firstname, ((elem, elem0), elem1, elem2, elem3, (elem4, elem5)), 5, true, 7, lastname, (test: 1, key: value));
+$-list2: (firstname, (elem1, elem2, elem3, (elem4, elem5)), 5, (elem6, elem7), true, lastname, (test: 1, key: value));
+
+// SECTION: string
+// @debug type($-list1, all, string); // firstname, lastname
+// @debug type($-list1, first, string); // firstname
+// @debug type($-list1, last, string); // lastname
+
+// @debug type($-list2, all, string); // lastname
+
+
+// SECTION: number
+// @debug type($-list1, all, number); // 5, 7
+// @debug type($-list1, first, number); // 5
+// @debug type($-list1, last, number); // 7
+
+// @debug type($-list2, all, number); // lastname
+
+
+// SECTION: list
+// @debug type($-list1, all, list); // (((elem, elem0), elem1, elem2, elem3, (elem4, elem5)),)
+// @debug type($-list1, first, list); // (elem, elem0), elem1, elem2, elem3, (elem4, elem5)
+// @debug type($-list1, last, list); // (elem, elem0), elem1, elem2, elem3, (elem4, elem5)
+
+// @debug type($-list2, all, list); // (elem1, elem2, elem3, (elem4, elem5)), (elem6, elem7)
+// @debug type($-list2, all, list, '==', (elem6, elem7)); // ((elem6, elem7),)
+
+
+// SECTION: select `$types`
+// @debug type((firstname, 5, true, lastname, (test: 1)), first, string); // firstname
+// @debug type((firstname, 5, true, lastname, (test: 1)), last, string); // lastname
+
+
+// SECTION: string + map
+// @debug type((firstname, 5, (b: 2), true, lastname, (test: 1)), last, string map); // lastname, (test: 1)
+
+
+// SECTION: select `$types` of specific `$values`
+// @debug type((firstname, 5, true, (test: 1)), any, string); // firstname
+// @debug type((firstname, 5, true, lastname, (test: 1)), any, string, '==', lastname); // lastname

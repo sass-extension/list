@@ -1,0 +1,21 @@
+// Functions.
+@use 'select.type.function' as select-type;
+
+// Status: DONE
+// The `list.select-list()` or `select.list()` function returns any, first or last occurring list, or all occurred lists, also the specified lists, otherwise list.
+// @param `$list` A list from which the occurring lists are retrieved.
+// @param `$occurrence` All, any, first or last occurrence of retrieved lists from `$list`.
+// @param `$operator` Operator to compare with `$value` and optional `$values`.
+// @arbitrary `$lists...` 
+// @returns The returned value is a retrieved list, list of lists or `list`.
+@function list($list, $occurrence: first, $operator: '==', $lists...) {
+  @return select-type.type($list, $occurrence, list, $operator, $lists...);
+}
+
+// Examples.
+$-list: ((elem1, elem2), (elem3, elem4), elem5, (elem6, elem7), null, (elem8,));
+
+// @debug list($-list, all); // (elem1, elem2), (elem3, elem4), (elem6, elem7)
+// @debug list($-list, any); // elem1, elem2
+// @debug list($-list, first); // elem1, elem2
+// @debug list($-list, last); // elem6, elem7

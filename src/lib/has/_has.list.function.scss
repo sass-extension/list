@@ -1,0 +1,43 @@
+// Sass.
+@use "sass:meta";
+
+// Functions.
+@use "has.type.function" as has-type;
+@use "has.value.function" as has-value;
+
+// Completed
+// The `list.has-list()` or `has.list()` function checks whether `$list` has `list` or specified `list` occurring any time,
+// or all/only occurring `list` .
+// @param `$list` The list to get list from.
+// @param `$occurrence` all, any, only occurrence to check  from `$list`.
+// @param `$operator` == != Operator to determine list to get from `$list`.
+// @arbitrary `$lists...` Specified lists to get from .
+// @returns The returned value is a `bool` indicating `$list` has `list` type or specified `list` occurring any time, or occurring all/only list type
+//          or specified `list`, compared by using `$operator` with list's elements.
+@function list($list, $occurrence: any, $operator: null, $lists...) {
+  @return if(
+    meta.type-of($operator) == string,
+    if(
+      has-type.type($lists, only, "==", list),
+      has-value.value($list, $occurrence, $operator, $lists...),
+      false
+    ),
+    has-type.type($list, $occurrence, "==", list)
+  );
+}
+
+// Examples.
+// any
+// @debug list(((1, 2, 3), ('4', '5', '6'), 7, 8, 9)); // true
+// @debug list(((1, 2, 3), ('4', '5', '6'), 7, 8, 9), any); // true
+// @debug list(((1, 2, 3), ('4', '5', '6'), 7, 8, 9), any, '==', ('4', '5', '6')); // true
+// @debug list(((4, 5, 6), (4, 5, 6), (4, 5, 6)), any, '==', (4, 5, 6)); // true
+// @debug list((1, 2, 3, '4', '5', '6', 7, 8, 9, (a: 1)), any); // false
+
+// all
+// @debug list(((1, 2, 3), ('4', '5', '6'), 7, 8, 9), all, '==', ('4', '5', '6'), (7, 8 , 9)); // false
+// @debug list((('4', '5', '6'), ('4', '5', '6'), ('4', '5', '6')), all, '==', ('4', '5', '6')); // true
+
+// only
+// @debug list(((1, 2, 3), ('4', '5', '6'), (7, 8, 9)), only); // true
+// @debug list(((1, 2, 3), ('4', '5', '6'), 7, 8, 9), only); // false

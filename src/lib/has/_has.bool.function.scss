@@ -1,0 +1,51 @@
+// Sass.
+@use "sass:meta";
+
+// Functions.
+@use "has.type.function" as has-type;
+@use "has.value.function" as has-value;
+
+// Completed
+// The `list.has-bool()` or `has.bool()` function checks whether `$list` has `bool` or specified `bool` occurring any/all or only times.
+// @param `$list` The list to get a `bool` determined with `$operator` occurring by `$occurrence`.
+// @param `$occurrence` Occurrence all, any, only of a `bool` in `$list`.
+// @param `$operator` == != Operator to compare list's `$list` elements with `bool`.
+// @arbitrary `$bool...` Specific `true` or `false` `bool` to determine `$list` has.
+// @returns The returned value is a `bool` indicating `$list` has `bool` type or specified `bool` occurring any time, or occurring all/only bool types
+//          or specified `bool`, compared by using `$operator` with list's elements.
+@function bool($list, $occurrence: any, $operator: null, $bool...) {
+  @return if(
+    meta.type-of($operator) == string,
+    if(
+      has-type.type($bools, only, "==", bool),
+      has-value.value($list, $occurrence, $operator, $bool...),
+      false
+    ),
+    has-type.type($list, $occurrence, "==", bool)
+  );
+}
+
+// Examples.
+// any
+// @debug bool(('a', 'b', 'c')); // false
+// @debug bool(('a', 'b', 'c', true)); // true
+// @debug bool(('a', 'b', false, 'c'), any); // true
+// @debug bool(('a', 'b', 'c'), any, '==', true); // false
+// @debug bool(('a', 'b', 'c'), any, '==', false); // false
+
+// all
+// @debug bool((true, true, false, false), all, '==', true, false); // true
+// @debug bool((true, true, true, true), all, '==', true); // true
+// @debug bool((false, false, false, false), all, '==', false); // true
+// @debug bool((true, true, true, true), all, '==', true, false); // false
+// @debug bool((false, false, false, false), all, '==', true); // false
+// @debug bool((true, true, true, true), all, '==', false); // false
+
+// only
+// @debug bool(('a', 'b', 'c'), only); // false
+// @debug bool(('a', 'b', false, 'c'), only); // false
+// @debug bool((true, true, false, false), only); // true
+// @debug bool((true, true, true, true), only, '==', true); // true
+// @debug bool((false, false, false, false), only, '==', false); // true
+// @debug bool((true, true, false, false), only, '!=', false); // false
+// @debug bool((true, true, true, true), only, '!=', false); // true

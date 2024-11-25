@@ -1,0 +1,56 @@
+// Sass.
+@use "sass:meta";
+
+// Functions.
+@use "has.type.function" as has-type;
+@use "has.value.function" as has-value;
+
+// Completed
+// The `list.has-number()` or `has.number()` function checks whether `$list` has any `number` or specified `number`, or all, only numbers
+// or specified  by using '==' or '!=' `$operator`.
+// @param `$list` The list to get `number` occurred by `$occurrence`.
+// @param `$occurrence` Occurrence all, any, only of specific `number` or `number` in `$list`.
+// @param `$operator` == != > >= < <= Operator to determine  `number`.
+// @arbitrary `$numbers...` Specific `number` to determine `$list` has.
+// @returns The returned value is a `bool` indicating.
+@function number($list, $occurrence: any, $operator: null, $numbers...) {
+  @return if(
+    meta.type-of($operator) == string,
+    if(
+      has-type.type($numbers, only, "==", number),
+      has-value.value($list, $occurrence, $operator, $numbers...),
+      false
+    ),
+    has-type.type($list, $occurrence, "==", number)
+  );
+}
+
+// Examples.
+// any
+// @debug number((1, 2, '3', '5', 4)); // true
+// @debug number((1, 2, 3, 5, 4)); // true
+// @debug number(('1', 2, '3', 5, '4'), any, '==', 5, 2, 10); // true
+// @debug number((1, 2, 3), any, '==', 3); // true
+// @debug number(('1', '2', '3', '5', '4')); // false
+// @debug number((1, '2', 3, '5', '4'), any, '==', 5, 4); // false
+// @debug number((15, 15, 15), any, '!=', 15); // false
+// @debug number((4, 10, 15), any, '!=', 15); // true
+
+// any
+// @debug number((1, 2, 3), any, '>', 1); // true
+// @debug number((1, 2, 3), any, '>', 4); // false
+// @debug number((4, 10, 15), any, '<', 15); // true
+// @debug number((4, 10, 15), any, '>', 15, 20, 25); // false
+// @debug number((4, 10, 15), any, '>', 15, 14, 25); // true
+
+// all
+// @debug number((1, 1, 1), all, '==', 1); // true
+// @debug number((1, 2, 3), all, '>', 1); // true
+// @debug number((1, 2, 3), all, '>=', 1); // true
+// @debug number((4, 10, 15), all, '<=', 15); // true
+
+// only
+// @debug number((1, 2, 3, 5, 4), only); // true
+// @debug number((1, 2, '3', '5', 4), only); // false
+// @debug number((1, 11, 111), only, '==', 1); // false
+// @debug number((4, 10, 15), only, '<', 15); // false

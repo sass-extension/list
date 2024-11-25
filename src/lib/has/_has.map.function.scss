@@ -1,0 +1,41 @@
+// Ssss.
+@use "sass:meta";
+
+// Functions.
+@use "has.type.function" as has-type;
+@use "has.value.function" as has-value;
+
+// Completed
+// The `list.has-map()` or `has.map()` function.
+// @param `$list`
+// @param `$occurrence` all, any, only
+// @param `$operator` == !=
+// @arbitrary `$maps...`
+// @returns The returned value is a `bool` indicating.
+@function map($list, $occurrence: any, $operator: null, $maps...) {
+  @return if(
+    meta.type-of($operator) == string,
+    if(
+      has-type.type($maps, only, "==", map),
+      has-value.value($list, $occurrence, $operator, $maps...),
+      false
+    ),
+    has-type.type($list, $occurrence, "==", map)
+  );
+}
+
+// Examples.
+// any
+// @debug map(((a: 1), )); // true
+// @debug map(((a: 1), (b: 2)), any); // true
+// @debug map(((a, 1), a, b, c)); // false
+// @debug map(((a, 1), a, b, c), any); // false
+
+// all
+// @debug map(((a: 1), (a: 2), (a: 3)), all, '==', (a: 1), (a: 2)); // true
+
+// only
+// @debug map(((a: 1), (b: 2)), only); // true
+// @debug map(((a: 1), (b: 2), a, 1, (b, c), 2d), only); // false
+// @debug map(((a: 1), (b: 2), a, 1, (b, c), 2d), only, '==', (a: 1)); // false
+// @debug map(((a: 1), (a: 1), (a: 1)), only, '==', (a: 1)); // true
