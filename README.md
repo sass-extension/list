@@ -1,10 +1,12 @@
 # sass-extension
 
-<a href="https://angular-package.github.io/sass"><img src="https://avatars.githubusercontent.com/u/189575200?s=400&u=0ee4f5924bd027db70ceb28619f534ee48198aa8v=4" width="92" height="92" /></a>
+<a href="https://angular-package.github.io/sass">
+   <img src="https://avatars.githubusercontent.com/u/189575200?s=400&u=0ee4f5924bd027db70ceb28619f534ee48198aa8v=4" width="150" />
+</a>
 
 ## List
 
-An enhanced Sass [`sass:list`](https://sass-lang.com/documentation/modules/list/) module.
+An enhanced [`sass:list`](https://sass-lang.com/documentation/modules/list/) module.
 
 <br>
 
